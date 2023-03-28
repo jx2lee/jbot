@@ -16,7 +16,7 @@ public class SlackApiEndpoints {
      * @return endpoint for RTM.connect()
      */
     public String getRtmConnectApi() {
-        return slackApi + "/rtm.connect?token={token}";
+        return slackApi + "/rtm.connect";
     }
 
     public String getImListApi() {
