@@ -8,6 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -46,7 +49,12 @@ public class SlackService {
      * @param slackToken slack token which you get from slack for the integration you create
      */
     public void connectRTM(String slackToken) {
-        RTM rtm = restTemplate.getForEntity(slackApiEndpoints.getRtmConnectApi(), RTM.class, slackToken).getBody();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + slackToken);
+
+        HttpEntity<String> entity = new HttpEntity<>("body", headers);
+        RTM rtm = restTemplate.exchange(slackApiEndpoints.getRtmConnectApi(), HttpMethod.GET, entity, RTM.class).getBody();
+
         currentUser = rtm.getSelf();
         webSocketUrl = rtm.getUrl();
         getImChannels(slackToken, 200,"");
